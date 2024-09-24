@@ -38,6 +38,7 @@ public class Media {
     private int duration;
 
     @NotNull(message = "ContentType is required")
+    @Enumerated(EnumType.STRING)
     @Column
     private MediaContentType contentType; // 'movie', 'series', 'tv_show'
 
