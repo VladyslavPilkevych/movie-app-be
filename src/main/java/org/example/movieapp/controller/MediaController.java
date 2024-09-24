@@ -3,7 +3,6 @@ package org.example.movieapp.controller;
 import jakarta.validation.Valid;
 import org.example.movieapp.factory.MediaFactory;
 import org.example.movieapp.model.Media;
-import org.example.movieapp.repository.MediaRepository;
 import org.example.movieapp.service.MediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +21,6 @@ public class MediaController {
     @Autowired
     private MediaService mediaService;
 
-    @Autowired
-    private MediaRepository mediaRepository;
-
     final private MediaFactory mediaFactory = new MediaFactory();
     private static final Logger logger = LoggerFactory.getLogger(MediaController.class);
 
@@ -38,20 +34,44 @@ public class MediaController {
 
     @GetMapping("/media/{id}")
     @ResponseBody
-    public Media showMediaById(@PathVariable(name = "id") Long mediaId) {
-        Media mediaContentById = mediaService.getMediaById(mediaId);
+    public Media showMediaById(@PathVariable(name = "id") String mediaId) {
+        Long mediaIdLong = Long.parseLong(mediaId);
+        Media mediaContentById = mediaService.getMediaById(mediaIdLong);
         return mediaContentById;
     }
 
     @PostMapping("/create/media")
     public ResponseEntity<?> addMedia(@Valid @RequestBody Media media) {
         try {
-            Media savedMedia = mediaRepository.save(media);
+            mediaService.addNewMedia(media);
 
-            return new ResponseEntity<>(savedMedia.getTitle() + " successfully saved", HttpStatus.OK);
+            return new ResponseEntity<>(media.getTitle() + " successfully saved", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error while saving: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
+    @PostMapping("/delete/media")
+    public ResponseEntity<?> removeMedia(@RequestBody String mediaId) {
+        Long mediaIdLong = Long.parseLong(mediaId);
+        try {
+            mediaService.deleteMedia(mediaIdLong);
+
+            return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error while deleting: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/update/media/{id}")
+    public ResponseEntity<?> updateMedia(@PathVariable("id") String mediaId, @Valid @RequestBody Media media) {
+        Long mediaIdLong = Long.parseLong(mediaId);
+        try {
+            mediaService.updateMedia(mediaIdLong, media);
+
+            return new ResponseEntity<>("Updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error while updating: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
