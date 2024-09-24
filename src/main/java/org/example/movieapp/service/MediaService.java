@@ -17,5 +17,21 @@ public class MediaService {
         return mediaRepository.findAll();
     }
 
+    public Media getMediaById(Long id) {
+        return mediaRepository.findById(id).orElse(null);
+    }
+
+    public void addNewMedia(Media media) {
+        mediaRepository.save(media);
+    }
+
+    public void updateMedia(Media media) {
+        mediaRepository.save(media);
+    }
+
+    public void deleteMedia(Long id) {
+        mediaRepository.deleteById(id);
+    }
+
 }
 

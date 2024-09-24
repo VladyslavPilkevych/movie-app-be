@@ -1,6 +1,9 @@
 package org.example.movieapp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.example.movieapp.utils.MediaContentType;
 
 import java.util.Date;
@@ -12,27 +15,48 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Title is required")
+    @Size(min = 1, message = "Title must not be empty")
     @Column
     private String title;
+
+    @NotNull(message = "Description is required")
     @Column
     private String description;
+
+    @Min(value = 0, message = "Popularity must be non-negative")
     @Column
     private double popularity;
+
+    @NotNull(message = "Year is required")
+    @Min(value = 1900, message = "Year must be a valid number")
     @Column
     private int year;
+
+    @Min(value = 1, message = "Duration must be at least 1 minute")
     @Column
     private int duration;
+
+    @NotNull(message = "ContentType is required")
     @Column
     private MediaContentType contentType; // 'movie', 'series', 'tv_show'
+
+    @NotNull(message = "Genre is required")
     @Column
     private String genre;
+
     @Column
     private boolean isAdult;
+
+    @NotNull(message = "ReleaseDate is required")
     @Column
     private Date releaseDate;
 
+    @NotNull(message = "ImagePath is required")
     @Column
     private String imagePath;
+
+    @NotNull(message = "PosterPath is required")
     @Column
     private String posterPath;
 
